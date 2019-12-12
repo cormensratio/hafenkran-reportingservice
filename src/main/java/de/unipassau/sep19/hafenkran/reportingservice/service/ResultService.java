@@ -11,6 +11,13 @@ import java.util.UUID;
  */
 public interface ResultService {
 
+    /**
+     * Retrieves the results in an {@link de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList} of an
+     * execution with the {@code executionId}.
+     *
+     * @param executionId The execution to get the results from.
+     * @return An {@link de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList} with all results in it.
+     */
     List<ResultDTO> retrieveResultDTOListByExecutionId(@NonNull UUID executionId);
 
 }

@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * The Data Transfer Object (DTO) representation of a list of {@link Result}s.
+ */
 @Data
 @AllArgsConstructor(onConstructor = @__(@JsonCreator))
 public class ResultDTOList {

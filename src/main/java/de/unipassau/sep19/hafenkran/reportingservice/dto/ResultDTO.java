@@ -11,6 +11,9 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+/**
+ * The Data Transfer Object (DTO) representation of an {@link Result}.
+ */
 @Data
 @AllArgsConstructor(onConstructor = @__(@JsonCreator))
 public class ResultDTO {

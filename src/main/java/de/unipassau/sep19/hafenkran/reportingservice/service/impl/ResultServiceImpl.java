@@ -29,6 +29,10 @@ public class ResultServiceImpl implements ResultService {
         WebClient.create().
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<ResultDTO> retrieveResultDTOListByExecutionId(@NonNull UUID executionId) {
         return ResultDTOList.convertResultListToDTOList(findResultListByExecutionId(executionId));
     }
