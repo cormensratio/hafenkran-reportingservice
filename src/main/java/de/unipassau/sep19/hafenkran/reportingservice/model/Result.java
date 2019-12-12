@@ -30,7 +30,7 @@ public class Result extends Resource{
     @NotBlank
     private String path;
 
-    enum ResultType{
+    public enum ResultType{
         CSV, LOG
     }
 }
