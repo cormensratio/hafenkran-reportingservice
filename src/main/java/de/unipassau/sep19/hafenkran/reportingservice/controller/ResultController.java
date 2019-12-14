@@ -1,6 +1,7 @@
 package de.unipassau.sep19.hafenkran.reportingservice.controller;
 
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTO;
+import de.unipassau.sep19.hafenkran.reportingservice.model.Result;
 import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class ResultController {
     private final ResultService resultService;
 
     /**
-     * GET-Endpoint for receiving the results of an execution.
+     * GET-Endpoint for receiving the csv-results of an execution.
      *
      * @param executionId The execution to get the results from.
      * @return An {@link de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList} of all results from the execution.
@@ -32,8 +33,8 @@ public class ResultController {
     @GetMapping("/{executionId}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ResultDTO> getResultDTOListByExecutionId(@NonNull @PathVariable UUID executionId) {
-        return resultService.retrieveResultDTOListByExecutionId(executionId);
+    public List<ResultDTO> getResultDTOListOfCSVsByExecutionId(@NonNull @PathVariable UUID executionId) {
+        return resultService.retrieveResultDTOListByExecutionIdAndType(executionId, Result.ResultType.CSV);
     }
 
 }

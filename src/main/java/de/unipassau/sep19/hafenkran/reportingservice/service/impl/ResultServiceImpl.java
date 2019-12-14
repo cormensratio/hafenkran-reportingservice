@@ -3,6 +3,7 @@ package de.unipassau.sep19.hafenkran.reportingservice.service.impl;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import de.unipassau.sep19.hafenkran.reportingservice.model.Result;
+import de.unipassau.sep19.hafenkran.reportingservice.model.Result.ResultType;
 import de.unipassau.sep19.hafenkran.reportingservice.repository.ResultRepository;
 import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
 import lombok.NonNull;
@@ -33,12 +34,12 @@ public class ResultServiceImpl implements ResultService {
      * {@inheritDoc}
      */
     @Override
-    public List<ResultDTO> retrieveResultDTOListByExecutionId(@NonNull UUID executionId) {
-        return ResultDTOList.convertResultListToDTOList(findResultListByExecutionId(executionId));
+    public List<ResultDTO> retrieveResultDTOListByExecutionIdAndType(@NonNull UUID executionId, @NonNull ResultType resultType) {
+        return ResultDTOList.convertResultListToDTOList(findResultListByExecutionIdAndType(executionId, resultType));
     }
 
-    private List<Result> findResultListByExecutionId(@NonNull UUID executionId) {
-        List<Result> resultsByExecutionId = resultRepository.findAllByExecutionId(executionId);
+    private List<Result> findResultListByExecutionIdAndType(@NonNull UUID executionId, @NonNull ResultType resultType) {
+        List<Result> resultsByExecutionId = resultRepository.findAllByExecutionIdAndTypeEquals(executionId, resultType);
         resultsByExecutionId.forEach(Result::validatePermissions);
         return resultsByExecutionId;
     }
