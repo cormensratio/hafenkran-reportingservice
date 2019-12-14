@@ -44,27 +44,34 @@ public class ResultServiceImpl implements ResultService {
     @Value("${results.storage-path}")
     private String storagePath;
 
-    private void retrieveRemoteResultsOfExecution(@NonNull UUID executionId) throws IOException, ArchiveException {
-        InputStream is = new Base64InputStream(new ByteArrayInputStream(csClient.retrieveResultsForExecutionId(executionId).getBytes()));
-        TarArchiveInputStream debInputStream = (TarArchiveInputStream) new ArchiveStreamFactory().createArchiveInputStream("tar", is);
+    /**
+     * Retrieves the results from the execution in the ClusterService and removes old files stored for the given execution.
+     *
+     * @param executionId the id of the execution
+     */
+    private void retrieveRemoteResultsOfExecution(@NonNull UUID executionId) {
+        try (ByteArrayInputStream resultsStream = new ByteArrayInputStream(csClient.retrieveResultsForExecutionId(executionId).getBytes());
+             InputStream is = new Base64InputStream(resultsStream);
+             TarArchiveInputStream debInputStream = (TarArchiveInputStream) new ArchiveStreamFactory().createArchiveInputStream("tar", is)) {
 
-        cleanupOldFiles(executionId);
-        saveTar(executionId, debInputStream);
-        extractResults(executionId, debInputStream);
+            cleanupOldFiles(executionId);
+            saveTar(executionId, debInputStream);
+            extractResults(executionId, debInputStream);
 
-        debInputStream.close();
-        is.close();
+        } catch (ArchiveException | IOException e) {
+            throw new IllegalStateException("Could not read archive with results for excution " + executionId, e);
+        }
     }
 
     private void extractResults(@NonNull UUID executionId, @NonNull TarArchiveInputStream debInputStream) throws IOException {
         // Extract important files and save them to the database
-        TarArchiveEntry entry = null;
+        TarArchiveEntry entry;
         while ((entry = (TarArchiveEntry) debInputStream.getNextEntry()) != null) {
             final File outputFile = new File(storagePath + "/" + executionId + "/", entry.getName());
 
             // Only untar important files which can be rendered at the client
             String typeString = Files.probeContentType(outputFile.toPath());
-            Result.ResultType type = null;
+            Result.ResultType type;
             if (typeString.equals("csv")) {
                 type = Result.ResultType.CSV;
             } else if (typeString.equals("log")) {
