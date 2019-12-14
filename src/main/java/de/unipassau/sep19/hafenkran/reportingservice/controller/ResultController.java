@@ -30,11 +30,24 @@ public class ResultController {
      * @param executionId The execution to get the results from.
      * @return An {@link de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList} of all results from the execution.
      */
-    @GetMapping("/{executionId}")
+    @GetMapping("/{executionId}/csv")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public List<ResultDTO> getResultDTOListOfCSVsByExecutionId(@NonNull @PathVariable UUID executionId) {
         return resultService.retrieveResultDTOListByExecutionIdAndType(executionId, Result.ResultType.CSV);
+    }
+
+    /**
+     * GET-Endpoint for receiving the log-results of an execution.
+     *
+     * @param executionId The execution to get the results from.
+     * @return An {@link de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList} of all results from the execution.
+     */
+    @GetMapping("/{executionId}/logs")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<ResultDTO> getResultDTOListOfLogsByExecutionId(@NonNull @PathVariable UUID executionId) {
+        return resultService.retrieveResultDTOListByExecutionIdAndType(executionId, Result.ResultType.LOG);
     }
 
 }
