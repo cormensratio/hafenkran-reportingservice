@@ -1,12 +1,14 @@
 package de.unipassau.sep19.hafenkran.reportingservice.clusterserviceclient;
 
+import de.unipassau.sep19.hafenkran.reportingservice.util.SecurityContextUtil;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.UUID;
 
 @Service
 public class ClusterServiceClient {
@@ -14,10 +16,10 @@ public class ClusterServiceClient {
     @Value("${clusterservice.path}")
     private String basePath;
 
-    public <T> T get(String path, Class<T> responseType) {
+    private <T> T get(String path, Class<T> responseType) {
         RestTemplate rt = new RestTemplate();
         String targetPath = basePath + path;
-        ResponseEntity<T> response = rt.exchange(basePath + path, HttpMethod.GET, null, responseType);
+        ResponseEntity<T> response = rt.exchange(basePath + path, HttpMethod.GET, authHeaders(), responseType);
 
         if (!HttpStatus.Series.valueOf(response.getStatusCode()).equals(HttpStatus.Series.SUCCESSFUL)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -28,4 +30,13 @@ public class ClusterServiceClient {
         return response.getBody();
     }
 
+    private HttpEntity authHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + SecurityContextUtil.getJWT());
+        return new HttpEntity<>("body", headers);
+    }
+
+    public String retrieveResultsForExecutionId(@NonNull UUID executionId){
+        return get(String.format("/executions/%s/results", executionId), String.class);
+    }
 }

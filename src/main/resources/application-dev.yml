@@ -19,5 +19,4 @@ mockdata: true
 lombok.log
 
 clusterservice.path: http://localhost:8082
-
 results.storage-path: /tmp/hafenkran/results

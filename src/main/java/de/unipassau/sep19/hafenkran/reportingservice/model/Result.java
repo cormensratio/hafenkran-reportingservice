@@ -1,9 +1,6 @@
 package de.unipassau.sep19.hafenkran.reportingservice.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.MappedSuperclass;
@@ -16,9 +13,10 @@ import java.util.UUID;
 @Slf4j
 @MappedSuperclass
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Result extends Resource{
+public class Result extends Resource {
 
     @NonNull
     private UUID executionId;
@@ -30,7 +28,7 @@ public class Result extends Resource{
     @NotBlank
     private String path;
 
-    enum ResultType{
+    public enum ResultType{
         CSV, LOG
     }
 }

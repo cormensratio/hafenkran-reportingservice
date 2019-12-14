@@ -2,20 +2,28 @@ package de.unipassau.sep19.hafenkran.reportingservice.service.impl;
 
 import de.unipassau.sep19.hafenkran.reportingservice.clusterserviceclient.ClusterServiceClient;
 import de.unipassau.sep19.hafenkran.reportingservice.model.Result;
+import de.unipassau.sep19.hafenkran.reportingservice.repository.ResultRepository;
 import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64InputStream;
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,21 +36,90 @@ import java.util.UUID;
 public class ResultServiceImpl implements ResultService {
 
     @NonNull
+    private ResultRepository resultRepository;
+
+    @NonNull
     private ClusterServiceClient csClient;
 
-    @Value()
+    @Value("${results.storage-path}")
+    private String storagePath;
 
-    private List<Result> storeRemoteResultsOfExecutionToFile(UUID executionId) {
-        String response = csClient.get(String.format("/executions/%s/results", executionId), String.class);
-        InputStream is = new Base64InputStream(new ByteArrayInputStream(response.getBytes()));
-        ArchiveInputStream archive = new TarArchiveInputStream(is);
+    private void retrieveRemoteResultsOfExecution(@NonNull UUID executionId) throws IOException, ArchiveException {
+        InputStream is = new Base64InputStream(new ByteArrayInputStream(csClient.retrieveResultsForExecutionId(executionId).getBytes()));
+        TarArchiveInputStream debInputStream = (TarArchiveInputStream) new ArchiveStreamFactory().createArchiveInputStream("tar", is);
 
-        File targetFile = new File("src/main/resources/targetFile.tmp");
+        cleanupOldFiles(executionId);
+        saveTar(executionId, debInputStream);
+        extractResults(executionId, debInputStream);
 
-        try {
-            FileUtils.copyInputStreamToFile(archive, targetFile);
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not resolve the results file to the file system", e);
+        debInputStream.close();
+        is.close();
+    }
+
+    private void extractResults(@NonNull UUID executionId, @NonNull TarArchiveInputStream debInputStream) throws IOException {
+        // Extract important files and save them to the database
+        TarArchiveEntry entry = null;
+        while ((entry = (TarArchiveEntry) debInputStream.getNextEntry()) != null) {
+            final File outputFile = new File(storagePath + "/" + executionId + "/", entry.getName());
+
+            // Only untar important files which can be rendered at the client
+            String typeString = Files.probeContentType(outputFile.toPath());
+            Result.ResultType type = null;
+            if (typeString.equals("csv")) {
+                type = Result.ResultType.CSV;
+            } else if (typeString.equals("log")) {
+                type = Result.ResultType.CSV;
+            } else {
+                continue;
+            }
+
+            if (entry.isDirectory()) {
+                if (!outputFile.exists()) {
+                    if (!outputFile.mkdirs()) {
+                        throw new IllegalStateException(String.format("Couldn't create directory %s.", outputFile.getAbsolutePath()));
+                    }
+                }
+            } else {
+                final OutputStream outputFileStream = new FileOutputStream(outputFile);
+                IOUtils.copy(debInputStream, outputFileStream);
+                outputFileStream.close();
+            }
+
+            resultRepository.save(new Result(executionId, type, outputFile.getPath()));
         }
     }
+
+    private void saveTar(@NonNull UUID executionId, @NonNull TarArchiveInputStream debInputStream) {
+        File targetFile = new File(storagePath + "/" + executionId + ".tar");
+        try {
+            FileUtils.copyInputStreamToFile(debInputStream, targetFile);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not store the results of " + executionId + " to the file system", e);
+        }
+    }
+
+    private void cleanupOldFiles(@NonNull UUID executionId) {
+        Path targetPath = Paths.get(storagePath + "/" + executionId);
+        deleteDirectoryRecursion(targetPath);
+        resultRepository.deleteAllByExecutionId(executionId);
+    }
+
+    private void deleteDirectoryRecursion(@NonNull Path path) {
+        if (Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
+            try (DirectoryStream<Path> entries = Files.newDirectoryStream(path)) {
+                for (Path entry : entries) {
+                    deleteDirectoryRecursion(entry);
+                }
+            } catch (IOException e) {
+                // ignore exception if directory does not exist
+            }
+        }
+
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            // ignore exception if file does not exist
+        }
+    }
+
 }

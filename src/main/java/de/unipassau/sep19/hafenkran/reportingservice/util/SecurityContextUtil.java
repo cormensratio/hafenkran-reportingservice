@@ -16,15 +16,27 @@ public class SecurityContextUtil {
      * @return {@link UserDTO} with information about the current user.
      */
     public static UserDTO getCurrentUserDTO() {
-        final UserDTO currentUser;
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth instanceof JwtAuthentication) {
-            JwtAuthentication authToken = (JwtAuthentication) auth;
-            currentUser = (UserDTO) authToken.getDetails();
-        } else {
+        if (!(auth instanceof JwtAuthentication)) {
             throw new RuntimeException("Invalid user session");
         }
-        return currentUser;
+
+        JwtAuthentication authToken = (JwtAuthentication) auth;
+        return (UserDTO) authToken.getDetails();
+    }
+
+    /**
+     * Retrieves the jwt for the current session.
+     *
+     * @return a string with the token from the user request.
+     */
+    public static String getJWT() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof JwtAuthentication)) {
+            throw new RuntimeException("Invalid user session");
+        }
+
+        JwtAuthentication authToken = (JwtAuthentication) auth;
+        return authToken.getToken();
     }
 }
