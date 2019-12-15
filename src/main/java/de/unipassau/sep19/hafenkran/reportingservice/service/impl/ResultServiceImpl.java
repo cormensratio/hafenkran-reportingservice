@@ -42,6 +42,9 @@ public class ResultServiceImpl implements ResultService {
     @Value("${results.storage-path}")
     private String storagePath;
 
+    /**
+     * {@inheritDoc}
+     */
     public byte[] downloadResultsAsBase64(@NonNull UUID executionId, boolean refresh) {
         if (refresh) {
             retrieveRemoteResultsOfExecution(executionId);
