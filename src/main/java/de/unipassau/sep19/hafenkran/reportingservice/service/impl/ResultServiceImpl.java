@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.UUID;
 
@@ -41,6 +42,19 @@ public class ResultServiceImpl implements ResultService {
     @Value("${results.storage-path}")
     private String storagePath;
 
+    public byte[] downloadResultsAsBase64(@NonNull UUID executionId, boolean refresh) {
+        if (refresh) {
+            retrieveRemoteResultsOfExecution(executionId);
+        }
+
+        File targetFile = new File(storagePath + "/" + executionId + ".tar");
+        try {
+            return FileUtils.readFileToString(targetFile, Charset.defaultCharset()).getBytes();
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not read the results of " + executionId + " from the file system", e);
+        }
+    }
+
     /**
      * Retrieves the results from the execution in the ClusterService and removes old files stored for the given execution.
      *
@@ -56,7 +70,7 @@ public class ResultServiceImpl implements ResultService {
             extractResults(executionId, debInputStream);
 
         } catch (ArchiveException | IOException e) {
-            throw new IllegalStateException("Could not read archive with results for excution " + executionId, e);
+            throw new IllegalStateException("Could not read archive with results for execution " + executionId, e);
         }
     }
 
