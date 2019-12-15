@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -18,13 +17,11 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
 import java.nio.file.*;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -70,12 +67,12 @@ public class ResultServiceImpl implements ResultService {
             final File outputFile = new File(storagePath + "/" + executionId + "/", entry.getName());
 
             // Only untar important files which can be rendered at the client
-            String typeString = Files.probeContentType(outputFile.toPath());
+            String[] typeString = outputFile.toString().split(".");
             Result.ResultType type;
-            if (typeString.equals("csv")) {
+            if (typeString[typeString.length - 1].equals("csv")) {
                 type = Result.ResultType.CSV;
-            } else if (typeString.equals("log")) {
-                type = Result.ResultType.CSV;
+            } else if (typeString[typeString.length - 1].equals("log")) {
+                type = Result.ResultType.LOG;
             } else {
                 continue;
             }
