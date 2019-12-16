@@ -23,7 +23,6 @@ import java.util.UUID;
 @Slf4j
 @MappedSuperclass
 @Data
-@NoArgsConstructor
 @EqualsAndHashCode
 public class Resource {
 
@@ -41,7 +40,11 @@ public class Resource {
     @Column(nullable = false)
     private UUID ownerId;
 
-    Resource(@NonNull UUID ownerId) {
+    Resource() {
+        this(SecurityContextUtil.getCurrentUserDTO().getId());
+    }
+
+    private Resource(@NonNull UUID ownerId) {
         this.id = UUID.randomUUID();
         this.createdAt = LocalDateTime.now();
         this.ownerId = ownerId;
