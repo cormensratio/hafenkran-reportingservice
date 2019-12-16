@@ -14,13 +14,12 @@ public interface ResultService {
 
     /**
      * Retrieves the results in an {@link de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList} of an
-     * execution with the {@code executionId} and the {@code resultType}.
+     * execution with the {@code executionId}.
      *
      * @param executionId The execution to get the results from.
-     * @param resultType The type that the results should have (can either be csv or log).
      * @return An {@link de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList} with all results in it.
      */
-    List<ResultDTO> retrieveResultDTOListByExecutionIdAndType(@NonNull UUID executionId, @NonNull Result.ResultType resultType);
+    List<ResultDTO> retrieveResultDTOListByExecutionId(@NonNull UUID executionId);
 
     /**
      * Retrieves the whole tar containing the execution results as base64.

@@ -26,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.*;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,20 +47,16 @@ public class ResultServiceImpl implements ResultService {
     @Value("${results.storage-path}")
     private String storagePath;
 
-    private List<Result> retrieveRemoteResultsForExecution(UUID executionId){
-        WebClient.create().
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<ResultDTO> retrieveResultDTOListByExecutionIdAndType(@NonNull UUID executionId, @NonNull ResultType resultType) {
-        return ResultDTOList.convertResultListToDTOList(findResultListByExecutionIdAndType(executionId, resultType));
+    public List<ResultDTO> retrieveResultDTOListByExecutionId(@NonNull UUID executionId) {
+        return ResultDTOList.convertResultListToDTOList(findResultListByExecutionIdAndType(executionId));
     }
 
-    private List<Result> findResultListByExecutionIdAndType(@NonNull UUID executionId, @NonNull ResultType resultType) {
-        List<Result> resultsByExecutionId = resultRepository.findAllByExecutionIdAndTypeEquals(executionId, resultType);
+    private List<Result> findResultListByExecutionIdAndType(@NonNull UUID executionId) {
+        List<Result> resultsByExecutionId = resultRepository.findAllByExecutionId(executionId);
         resultsByExecutionId.forEach(Result::validatePermissions);
         return resultsByExecutionId;
     }

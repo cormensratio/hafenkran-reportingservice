@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface ResultRepository extends CrudRepository<Result, UUID> {
 
 
-    List<Result> findAllByExecutionIdAndTypeEquals(@NonNull UUID executionId, @NonNull Result.ResultType resultType);
+    List<Result> findAllByExecutionId(@NonNull UUID executionId);
 
     void deleteAllByExecutionId(@NonNull UUID executionId);
 

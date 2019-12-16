@@ -21,10 +21,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(onConstructor = @__(@JsonCreator))
 public class ResultDTOList {
 
-    /*@NonNull
-    @JsonProperty("id")
-    private final UUID id;*/
-
     @NonNull
     @JsonProperty("executionId")
     private final UUID executionId;
@@ -39,7 +35,6 @@ public class ResultDTOList {
 
     @JsonCreator
     public ResultDTOList(@NonNull List<Result> resultsList) {
-        //this.id = resultsList.get(0).getId();
         this.executionId = resultsList.get(0).getExecutionId();
         this.updatedAt = resultsList.get(0).getCreatedAt();
 
