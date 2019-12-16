@@ -4,7 +4,6 @@ import de.unipassau.sep19.hafenkran.reportingservice.clusterserviceclient.Cluste
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import de.unipassau.sep19.hafenkran.reportingservice.model.Result;
-import de.unipassau.sep19.hafenkran.reportingservice.model.Result.ResultType;
 import de.unipassau.sep19.hafenkran.reportingservice.repository.ResultRepository;
 import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
 import lombok.NonNull;
@@ -52,13 +51,27 @@ public class ResultServiceImpl implements ResultService {
      */
     @Override
     public List<ResultDTO> retrieveResultDTOListByExecutionId(@NonNull UUID executionId) {
-        return ResultDTOList.convertResultListToDTOList(findResultListByExecutionIdAndType(executionId));
+        List<ResultDTO> resultDTOList = ResultDTOList.convertResultListToDTOList(findResultListByExecutionIdAndType(executionId));
+        for (ResultDTO resultDTO : resultDTOList) {
+            encodeFileToBase64(resultDTO);
+        }
+        return  resultDTOList;
     }
 
     private List<Result> findResultListByExecutionIdAndType(@NonNull UUID executionId) {
         List<Result> resultsByExecutionId = resultRepository.findAllByExecutionId(executionId);
         resultsByExecutionId.forEach(Result::validatePermissions);
         return resultsByExecutionId;
+    }
+
+    private void encodeFileToBase64(@NonNull ResultDTO resultDTO) {
+        byte[] fileContent = new byte[0];
+        try {
+            fileContent = Files.readAllBytes(Paths.get(resultDTO.getFileContent()));
+        } catch (IOException e) {
+            // ignore exception if file is empty
+        }
+        resultDTO.setFileContent(Base64.getEncoder().encodeToString(fileContent));
     }
 
     /**

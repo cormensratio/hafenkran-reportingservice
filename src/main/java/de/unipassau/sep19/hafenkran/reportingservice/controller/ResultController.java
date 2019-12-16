@@ -1,7 +1,6 @@
 package de.unipassau.sep19.hafenkran.reportingservice.controller;
 
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTO;
-import de.unipassau.sep19.hafenkran.reportingservice.model.Result;
 import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
