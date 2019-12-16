@@ -28,13 +28,17 @@ public class Results extends Resource {
     private ResultType type;
 
     @NonNull
+    private String name;
+
+    @NonNull
     @NotBlank
     private String path;
 
-    public Results(@NonNull UUID executionId, @NonNull ResultType type, @NonNull @NotBlank String path) {
+    public Results(@NonNull UUID executionId, @NonNull ResultType type, @NonNull @NotBlank String name, @NonNull @NotBlank String path) {
         super();
         this.executionId = executionId;
         this.type = type;
+        this.name = name;
         this.path = path;
     }
 

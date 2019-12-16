@@ -16,12 +16,16 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.query.JpaQueryCreator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.*;
@@ -118,7 +122,7 @@ public class ResultServiceImpl implements ResultService {
                 outputFileStream.close();
             }
 
-            resultRepository.save(new Results(executionId, type, outputFile.getPath()));
+            resultRepository.save(new Results(executionId, type, fileName, outputFile.getPath()));
         }
     }
 
@@ -137,6 +141,7 @@ public class ResultServiceImpl implements ResultService {
 
     private void cleanupOldFiles(@NonNull UUID executionId, @NonNull Path folderPath) {
         deleteDirectoryRecursion(folderPath);
+        // resultRepository.deleteResultsByExecutionId(executionId);
         resultRepository.deleteAll();
     }
 
