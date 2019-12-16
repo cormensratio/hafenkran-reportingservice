@@ -25,7 +25,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.*;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
