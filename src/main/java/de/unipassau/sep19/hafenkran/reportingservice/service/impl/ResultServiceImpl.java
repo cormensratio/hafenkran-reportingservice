@@ -4,7 +4,6 @@ import de.unipassau.sep19.hafenkran.reportingservice.clusterserviceclient.Cluste
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import de.unipassau.sep19.hafenkran.reportingservice.model.Result;
-import de.unipassau.sep19.hafenkran.reportingservice.model.Result.ResultType;
 import de.unipassau.sep19.hafenkran.reportingservice.repository.ResultRepository;
 import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
 import lombok.NonNull;
@@ -26,7 +25,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.*;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
