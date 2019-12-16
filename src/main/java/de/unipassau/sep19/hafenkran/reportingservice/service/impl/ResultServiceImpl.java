@@ -51,14 +51,14 @@ public class ResultServiceImpl implements ResultService {
      */
     @Override
     public List<ResultDTO> retrieveResultDTOListByExecutionId(@NonNull UUID executionId) {
-        List<ResultDTO> resultDTOList = ResultDTOList.convertResultListToDTOList(findResultListByExecutionIdAndType(executionId));
+        List<ResultDTO> resultDTOList = ResultDTOList.convertResultListToDTOList(findResultListByExecutionId(executionId));
         for (ResultDTO resultDTO : resultDTOList) {
             encodeFileToBase64(resultDTO);
         }
         return  resultDTOList;
     }
 
-    private List<Result> findResultListByExecutionIdAndType(@NonNull UUID executionId) {
+    private List<Result> findResultListByExecutionId(@NonNull UUID executionId) {
         List<Result> resultsByExecutionId = resultRepository.findAllByExecutionId(executionId);
         resultsByExecutionId.forEach(Result::validatePermissions);
         return resultsByExecutionId;
