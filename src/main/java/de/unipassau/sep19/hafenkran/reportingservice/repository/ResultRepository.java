@@ -11,5 +11,9 @@ import java.util.UUID;
 @Repository
 public interface ResultRepository extends CrudRepository<Result, UUID> {
 
-    List<Result> findAllByExecutionIdAndTypeEquals(@NonNull UUID executionId, @NonNull Result.ResultType resultType);
+
+    List<Result> findAllByExecutionId(@NonNull UUID executionId);
+
+    void deleteAllByExecutionId(@NonNull UUID executionId);
+
 }

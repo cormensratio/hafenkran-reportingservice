@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.UUID;
 
 /**
@@ -27,14 +29,24 @@ public class ResultDTO {
     private final Result.ResultType type;
 
     @NonNull
-    @JsonProperty("file")
-    private final File file;
+    @JsonProperty("fileContent")
+    private final String fileContent;
 
     public static ResultDTO fromResults(@NonNull final Result result) {
         return new ResultDTO(
                 result.getId(),
                 result.getType(),
-                Paths.get(result.getPath()).toFile()
+                retrieveFileAsBase64String(result)
         );
+    }
+
+    private static String retrieveFileAsBase64String(@NonNull final Result result) {
+        byte[] fileContent = new byte[0];
+        try {
+            fileContent = Files.readAllBytes(Paths.get(result.getPath()));
+        } catch (IOException e) {
+            return Base64.getEncoder().encodeToString(fileContent);
+        }
+        return Base64.getEncoder().encodeToString(fileContent);
     }
 }

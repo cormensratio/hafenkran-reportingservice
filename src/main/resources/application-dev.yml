@@ -16,4 +16,6 @@ jwt:
   secret: MCgCIQCAS7IFlSvaBOPXwSBHo+7+6C4RbkvYj3fgI5+Abe4pRwIDAQAB
 
 mockdata: true
-lombok.log
+
+clusterservice.path: http://localhost:8082
+results.storage-path: /tmp/hafenkran/results
