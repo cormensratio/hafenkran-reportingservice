@@ -22,4 +22,13 @@ public interface ResultService {
      */
     List<ResultDTO> retrieveResultDTOListByExecutionIdAndType(@NonNull UUID executionId, @NonNull Result.ResultType resultType);
 
+    /**
+     * Retrieves the whole tar containing the execution results as base64.
+     *
+     * @param executionId the id of the target execution.
+     * @param refresh whether to refresh the files which are already stored.
+     * @return the base64 encoded tar file.
+     */
+    byte[] downloadResultsAsBase64(@NonNull UUID executionId, boolean refresh);
+
 }
