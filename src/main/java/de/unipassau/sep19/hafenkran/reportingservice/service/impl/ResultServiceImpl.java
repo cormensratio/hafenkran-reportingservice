@@ -16,16 +16,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.repository.query.JpaQueryCreator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.*;
@@ -128,10 +123,8 @@ public class ResultServiceImpl implements ResultService {
 
     private File saveTar(@NonNull UUID executionId, @NonNull InputStream debInputStream, @NonNull Path folderPath) {
         File outputFile = Paths.get(folderPath.toString() + ".tar").normalize().toFile();
-        try {
-            final OutputStream outputFileStream = new FileOutputStream(outputFile);
+        try (OutputStream outputFileStream = new FileOutputStream(outputFile)) {
             IOUtils.copy(debInputStream, outputFileStream);
-            outputFileStream.close();
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Could not store the results of " + executionId + " to the file system", e);
