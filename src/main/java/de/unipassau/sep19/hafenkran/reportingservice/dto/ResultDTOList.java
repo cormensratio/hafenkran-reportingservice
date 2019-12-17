@@ -7,12 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * The Data Transfer Object (DTO) representation of a list of {@link Result}s.
@@ -27,35 +25,22 @@ public class ResultDTOList {
 
     @NonNull
     @JsonProperty("updatedAt")
-    private final LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @NonNull
     @JsonProperty("resultList")
     private final List<ResultDTO> results;
 
     @JsonCreator
-    public ResultDTOList(@NonNull List<Result> resultsList) {
-        this.executionId = resultsList.get(0).getExecutionId();
-        this.updatedAt = resultsList.get(0).getCreatedAt();
+    public ResultDTOList(List<ResultDTO> resultDTOList, @NonNull UUID executionId, LocalDateTime updatedAt) {
+        this.executionId = executionId;
+        this.updatedAt = updatedAt;
 
-        if (resultsList.isEmpty()) {
+        if (resultDTOList.isEmpty()) {
             this.results = Collections.emptyList();
         } else {
-            this.results = convertResultListToDTOList(resultsList);
+            this.results = resultDTOList;
         }
-    }
-
-    /**
-     * Converts a list of {@link Result}s into a {@link ResultDTOList}.
-     *
-     * @param resultsList The list of {@link Result}s that is going to be converted.
-     * @return The converted {@link ResultDTOList}.
-     */
-    public static List<ResultDTO> convertResultListToDTOList(
-            @NonNull @NotEmpty List<Result> resultsList) {
-
-        return resultsList.stream()
-                .map(ResultDTO::fromResults).collect(Collectors.toList());
     }
 
 }

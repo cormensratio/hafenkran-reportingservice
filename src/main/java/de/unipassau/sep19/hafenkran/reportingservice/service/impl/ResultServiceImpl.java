@@ -25,6 +25,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -50,12 +52,17 @@ public class ResultServiceImpl implements ResultService {
      * {@inheritDoc}
      */
     @Override
-    public List<ResultDTO> retrieveResultDTOListByExecutionId(@NonNull UUID executionId) {
-        List<ResultDTO> resultDTOList = ResultDTOList.convertResultListToDTOList(findResultListByExecutionId(executionId));
-        for (ResultDTO resultDTO : resultDTOList) {
-            encodeFileToBase64(resultDTO);
+    public ResultDTOList retrieveResultDTOListByExecutionId(@NonNull UUID executionId) {
+        List<Result> resultList = findResultListByExecutionId(executionId);
+        List<ResultDTO> resultDTOList = new ArrayList<>();
+        for (Result result : resultList) {
+            ResultDTO resultDTO = new ResultDTO(
+                                        result.getId(),
+                                        result.getType(),
+                                        encodeFileToBase64(result.getPath()));
+            resultDTOList.add(resultDTO);
         }
-        return  resultDTOList;
+        return new ResultDTOList(resultDTOList, executionId, LocalDateTime.now());
     }
 
     private List<Result> findResultListByExecutionId(@NonNull UUID executionId) {
@@ -64,14 +71,14 @@ public class ResultServiceImpl implements ResultService {
         return resultsByExecutionId;
     }
 
-    private void encodeFileToBase64(@NonNull ResultDTO resultDTO) {
-        byte[] fileContent = new byte[0];
+    private String encodeFileToBase64(@NonNull String file) {
+        byte[] fileContent;
         try {
-            fileContent = Files.readAllBytes(Paths.get(resultDTO.getFileContent()));
+            fileContent = Files.readAllBytes(Paths.get(file));
         } catch (IOException e) {
-            // ignore exception if file is empty
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The file " + file + " couldn't be found.", e);
         }
-        resultDTO.setFileContent(Base64.getEncoder().encodeToString(fileContent));
+        return Base64.getEncoder().encodeToString(fileContent);
     }
 
     /**

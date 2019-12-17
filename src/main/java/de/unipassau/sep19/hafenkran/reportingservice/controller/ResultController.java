@@ -1,6 +1,6 @@
 package de.unipassau.sep19.hafenkran.reportingservice.controller;
 
-import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTO;
+import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,7 +32,7 @@ public class ResultController {
     @GetMapping("/{executionId}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ResultDTO> getResultDTOListOfCSVsByExecutionId(@NonNull @PathVariable UUID executionId) {
+    public ResultDTOList getResultDTOListOfCSVsByExecutionId(@NonNull @PathVariable UUID executionId) {
         return resultService.retrieveResultDTOListByExecutionId(executionId);
     }
 

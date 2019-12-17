@@ -28,11 +28,4 @@ public class ResultDTO {
     @JsonProperty("fileContent")
     private String fileContent;
 
-    public static ResultDTO fromResults(@NonNull final Result result) {
-        return new ResultDTO(
-                result.getId(),
-                result.getType(),
-                result.getPath()
-        );
-    }
 }

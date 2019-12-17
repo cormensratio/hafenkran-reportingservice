@@ -1,10 +1,8 @@
 package de.unipassau.sep19.hafenkran.reportingservice.service;
 
-import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTO;
-import de.unipassau.sep19.hafenkran.reportingservice.model.Result;
+import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import lombok.NonNull;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -19,7 +17,7 @@ public interface ResultService {
      * @param executionId The execution to get the results from.
      * @return An {@link de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList} with all results in it.
      */
-    List<ResultDTO> retrieveResultDTOListByExecutionId(@NonNull UUID executionId);
+    ResultDTOList retrieveResultDTOListByExecutionId(@NonNull UUID executionId);
 
     /**
      * Retrieves the whole tar containing the execution results as base64.
