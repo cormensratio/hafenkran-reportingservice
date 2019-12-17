@@ -2,7 +2,7 @@ package de.unipassau.sep19.hafenkran.reportingservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.unipassau.sep19.hafenkran.reportingservice.model.Result;
+import de.unipassau.sep19.hafenkran.reportingservice.model.Results;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * The Data Transfer Object (DTO) representation of a list of {@link Result}s.
+ * The Data Transfer Object (DTO) representation of a list of {@link Results}.
  */
 @Data
 @AllArgsConstructor(onConstructor = @__(@JsonCreator))

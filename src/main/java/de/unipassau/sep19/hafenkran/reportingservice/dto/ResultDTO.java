@@ -2,7 +2,7 @@ package de.unipassau.sep19.hafenkran.reportingservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.unipassau.sep19.hafenkran.reportingservice.model.Result;
+import de.unipassau.sep19.hafenkran.reportingservice.model.Results;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
@@ -10,7 +10,7 @@ import lombok.NonNull;
 import java.util.UUID;
 
 /**
- * The Data Transfer Object (DTO) representation of an {@link Result}.
+ * The Data Transfer Object (DTO) representation of an {@link Results}.
  */
 @Data
 @AllArgsConstructor(onConstructor = @__(@JsonCreator))
@@ -22,7 +22,7 @@ public class ResultDTO {
 
     @NonNull
     @JsonProperty("type")
-    private final Result.ResultType type;
+    private final Results.ResultType type;
 
     @NonNull
     @JsonProperty("fileContent")
