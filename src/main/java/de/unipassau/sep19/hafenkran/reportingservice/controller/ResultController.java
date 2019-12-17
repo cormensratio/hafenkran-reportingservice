@@ -32,21 +32,21 @@ public class ResultController {
     @GetMapping("/{executionId}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public ResultDTOList getResultDTOListOfCSVsByExecutionId(@NonNull @PathVariable UUID executionId) {
+    public ResultDTOList getResultsForExecutionId(@NonNull @PathVariable UUID executionId) {
         return resultService.retrieveResultDTOListByExecutionId(executionId);
     }
 
     /**
-     * GET-Endpoint for receiving all results (csvs and logs) of the execution with the {@code executionId}.
+     * GET-Endpoint for receiving all results of the execution with the {@code executionId} as a String.
      *
      * @param executionId The id from the execution to get the results from.
      * @param refreshString A boolean represented as string, which toggles the refresh of the resources.
-     * @return A Base64-String with the results.
+     * @return A Base64-String from the results for making a download available.
      */
     @GetMapping(value = "/{executionId}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public byte[] getResultsForExecution(@NonNull @PathVariable UUID executionId, @RequestParam("refresh") String refreshString) {
+    public byte[] downloadResultsForExecution(@NonNull @PathVariable UUID executionId, @RequestParam("refresh") String refreshString) {
         return resultService.downloadResultsAsBase64(executionId, refreshString.equals("true"));
     }
 }
