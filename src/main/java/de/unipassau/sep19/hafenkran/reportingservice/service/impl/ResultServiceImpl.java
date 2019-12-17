@@ -141,8 +141,7 @@ public class ResultServiceImpl implements ResultService {
 
     private void cleanupOldFiles(@NonNull UUID executionId, @NonNull Path folderPath) {
         deleteDirectoryRecursion(folderPath);
-        // resultRepository.deleteResultsByExecutionId(executionId);
-        resultRepository.deleteAll();
+        resultRepository.deleteByExecutionId(executionId);
     }
 
     private void deleteDirectoryRecursion(@NonNull Path path) {
