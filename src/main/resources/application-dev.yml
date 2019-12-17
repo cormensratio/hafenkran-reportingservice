@@ -9,7 +9,8 @@ spring:
     initialization-mode: always
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
+    show-sql: true
 
 jwt:
   validity: 18000
