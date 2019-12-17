@@ -16,4 +16,6 @@ public interface ResultRepository extends CrudRepository<Results, UUID> {
 
     void deleteAllByExecutionId(@NonNull UUID executionId);
 
+    void deleteResultsByExecutionId(@NonNull UUID executionId);
+
 }
