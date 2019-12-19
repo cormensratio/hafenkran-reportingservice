@@ -158,6 +158,10 @@ public class ResultServiceImpl implements ResultService {
 
     private File saveTar(@NonNull UUID executionId, @NonNull InputStream debInputStream, @NonNull Path folderPath) {
         File outputFile = Paths.get(folderPath.toString() + ".tar").normalize().toFile();
+        File parent = outputFile.getParentFile();
+        if (!parent.exists()) {
+            boolean mkdirs = parent.mkdirs();
+        }
         try (OutputStream outputFileStream = new FileOutputStream(outputFile)) {
             IOUtils.copy(debInputStream, outputFileStream);
         } catch (IOException e) {
