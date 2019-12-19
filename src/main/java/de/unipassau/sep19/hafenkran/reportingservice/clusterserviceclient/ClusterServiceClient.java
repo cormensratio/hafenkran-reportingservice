@@ -36,7 +36,7 @@ public class ClusterServiceClient {
         return new HttpEntity<>("body", headers);
     }
 
-    public byte[] retrieveResultsForExecutionId(@NonNull UUID executionId){
-        return get(String.format("/executions/%s/results", executionId), byte[].class);
+    public String retrieveResultsForExecutionId(@NonNull UUID executionId){
+        return get(String.format("/executions/%s/results", executionId), String.class);
     }
 }
