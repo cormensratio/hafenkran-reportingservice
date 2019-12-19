@@ -103,11 +103,10 @@ public class ResultServiceImpl implements ResultService {
      */
     private void retrieveRemoteResultsOfExecution(@NonNull UUID executionId, @NonNull Path folderPath) {
         try (ByteArrayInputStream resultsStream = new ByteArrayInputStream(
-                csClient.retrieveResultsForExecutionId(executionId).getBytes());
-             InputStream is = new Base64InputStream(resultsStream)) {
+                csClient.retrieveResultsForExecutionId(executionId));) {
 
             cleanupOldFiles(executionId, folderPath);
-            File file = saveTar(executionId, is, folderPath);
+            File file = saveTar(executionId, resultsStream, folderPath);
             extractResults(executionId, file, folderPath);
 
         } catch (IOException e) {
@@ -164,6 +163,7 @@ public class ResultServiceImpl implements ResultService {
             boolean mkdirs = parent.mkdirs();
         }
         try (OutputStream outputFileStream = new FileOutputStream(outputFile)) {
+
             IOUtils.copy(debInputStream, outputFileStream);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
