@@ -57,6 +57,7 @@ public class ResultServiceImpl implements ResultService {
         List<Results> resultList = retrieveResultListByExecutionId(executionId);
         List<ResultDTO> resultDTOList = resultList.stream().map(r -> new ResultDTO(
                 r.getId(),
+                r.getName(),
                 r.getType(),
                 encodeFileToBase64(r.getPath()))).collect(Collectors.toList());
         return new ResultDTOList(resultDTOList, executionId, LocalDateTime.now());

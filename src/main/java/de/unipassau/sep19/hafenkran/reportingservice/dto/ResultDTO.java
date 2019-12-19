@@ -21,6 +21,10 @@ public class ResultDTO {
     private final UUID id;
 
     @NonNull
+    @JsonProperty("name")
+    private final String name;
+
+    @NonNull
     @JsonProperty("type")
     private final Results.ResultType type;
 
