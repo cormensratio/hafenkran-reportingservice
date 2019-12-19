@@ -1,6 +1,8 @@
 package de.unipassau.sep19.hafenkran.reportingservice.service.impl;
 
 import de.unipassau.sep19.hafenkran.reportingservice.clusterserviceclient.ClusterServiceClient;
+import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTO;
+import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import de.unipassau.sep19.hafenkran.reportingservice.model.Results;
 import de.unipassau.sep19.hafenkran.reportingservice.repository.ResultRepository;
 import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
@@ -24,7 +26,10 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.*;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * {@inheritDoc}
@@ -35,13 +40,43 @@ import java.util.UUID;
 public class ResultServiceImpl implements ResultService {
 
     @NonNull
-    private ResultRepository resultRepository;
+    private final ResultRepository resultRepository;
 
     @NonNull
     private ClusterServiceClient csClient;
 
     @Value("${results.storage-path}")
     private String storagePath;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResultDTOList retrieveResultDTOListByExecutionId(@NonNull UUID executionId) {
+        downloadResultsAsBase64(executionId, true);
+        List<Results> resultList = retrieveResultListByExecutionId(executionId);
+        List<ResultDTO> resultDTOList = resultList.stream().map(r -> new ResultDTO(
+                r.getId(),
+                r.getType(),
+                encodeFileToBase64(r.getPath()))).collect(Collectors.toList());
+        return new ResultDTOList(resultDTOList, executionId, LocalDateTime.now());
+    }
+
+    private List<Results> retrieveResultListByExecutionId(@NonNull UUID executionId) {
+        List<Results> resultsByExecutionId = resultRepository.findAllByExecutionId(executionId);
+        resultsByExecutionId.forEach(Results::validatePermissions);
+        return resultsByExecutionId;
+    }
+
+    private String encodeFileToBase64(@NonNull String file) {
+        byte[] fileContent;
+        try {
+            fileContent = Files.readAllBytes(Paths.get(file));
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The file " + file + " couldn't be found.", e);
+        }
+        return Base64.encodeBase64String(fileContent);
+    }
 
     /**
      * {@inheritDoc}
