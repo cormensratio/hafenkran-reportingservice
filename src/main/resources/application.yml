@@ -22,3 +22,6 @@ jwt:
   secret:
 
 mockdata: false
+
+clusterservice.path:
+results.storage-path: /tmp/hafenkran/results

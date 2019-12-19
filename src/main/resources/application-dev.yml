@@ -9,10 +9,14 @@ spring:
     initialization-mode: always
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
+    show-sql: true
 
 jwt:
   validity: 18000
   secret: MCgCIQCAS7IFlSvaBOPXwSBHo+7+6C4RbkvYj3fgI5+Abe4pRwIDAQAB
 
 mockdata: true
+
+clusterservice.path: http://localhost:8082
+results.storage-path: /tmp/hafenkran/results
