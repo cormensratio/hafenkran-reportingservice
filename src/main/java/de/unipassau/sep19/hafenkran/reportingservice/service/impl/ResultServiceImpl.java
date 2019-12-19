@@ -163,10 +163,8 @@ public class ResultServiceImpl implements ResultService {
 
     private File saveTar(@NonNull UUID executionId, @NonNull InputStream debInputStream, @NonNull Path folderPath) {
         File outputFile = Paths.get(folderPath.toString() + ".tar").normalize().toFile();
-        try {
-            final OutputStream outputFileStream = new FileOutputStream(outputFile);
+        try (OutputStream outputFileStream = new FileOutputStream(outputFile)) {
             IOUtils.copy(debInputStream, outputFileStream);
-            outputFileStream.close();
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Could not store the results of " + executionId + " to the file system", e);
