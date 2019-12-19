@@ -49,7 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // Set the UserDto as authentication object for the current session if the user is authenticated with a token
         if (userDto != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (jwtTokenUtil.validateToken(jwtToken)) {
-                JwtAuthentication jwtAuthentication = new JwtAuthentication(userDto);
+                JwtAuthentication jwtAuthentication = new JwtAuthentication(userDto, jwtToken);
                 SecurityContextHolder.getContext().setAuthentication(jwtAuthentication);
             }
         }
