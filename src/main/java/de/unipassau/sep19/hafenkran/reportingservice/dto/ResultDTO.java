@@ -25,7 +25,7 @@ public class ResultDTO {
     private final Results.ResultType type;
 
     @NonNull
-    @JsonProperty("fileContent")
-    private String fileContent;
+    @JsonProperty("file")
+    private String file;
 
 }

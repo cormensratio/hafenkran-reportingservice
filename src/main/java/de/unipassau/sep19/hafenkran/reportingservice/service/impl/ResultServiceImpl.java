@@ -9,6 +9,7 @@ import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -26,12 +27,9 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static java.util.Base64.getEncoder;
-import static org.apache.commons.codec.binary.Base64.*;
+import java.util.stream.Collectors;
 
 /**
  * {@inheritDoc}
@@ -55,19 +53,16 @@ public class ResultServiceImpl implements ResultService {
      */
     @Override
     public ResultDTOList retrieveResultDTOListByExecutionId(@NonNull UUID executionId) {
-        List<Results> resultList = findResultListByExecutionId(executionId);
-        List<ResultDTO> resultDTOList = new ArrayList<>();
-        for (Results result : resultList) {
-            ResultDTO resultDTO = new ResultDTO(
-                                        result.getId(),
-                                        result.getType(),
-                                        encodeFileToBase64(result.getPath()));
-            resultDTOList.add(resultDTO);
-        }
+        downloadResultsAsBase64(executionId, true);
+        List<Results> resultList = retrieveResultListByExecutionId(executionId);
+        List<ResultDTO> resultDTOList = resultList.stream().map(r -> new ResultDTO(
+                r.getId(),
+                r.getType(),
+                encodeFileToBase64(r.getPath()))).collect(Collectors.toList());
         return new ResultDTOList(resultDTOList, executionId, LocalDateTime.now());
     }
 
-    private List<Results> findResultListByExecutionId(@NonNull UUID executionId) {
+    private List<Results> retrieveResultListByExecutionId(@NonNull UUID executionId) {
         List<Results> resultsByExecutionId = resultRepository.findAllByExecutionId(executionId);
         resultsByExecutionId.forEach(Results::validatePermissions);
         return resultsByExecutionId;
@@ -80,7 +75,7 @@ public class ResultServiceImpl implements ResultService {
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The file " + file + " couldn't be found.", e);
         }
-        return getEncoder().encodeToString(fileContent);
+        return Base64.encodeBase64String(fileContent);
     }
 
     /**
@@ -93,7 +88,7 @@ public class ResultServiceImpl implements ResultService {
 
         File targetFile = new File(storagePath + "/" + executionId + ".tar");
         try {
-            return encodeBase64(FileUtils.readFileToString(targetFile, Charset.defaultCharset()).getBytes());
+            return Base64.encodeBase64(FileUtils.readFileToString(targetFile, Charset.defaultCharset()).getBytes());
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Could not read the results of " + executionId + " from the file system", e);
