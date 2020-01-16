@@ -49,4 +49,12 @@ public class ResultController {
     public byte[] downloadResultsForExecution(@NonNull @PathVariable UUID executionId, @RequestParam("refresh") String refreshString) {
         return resultService.downloadResultsAsBase64(executionId, refreshString.equals("true"));
     }
+
+
+    @PostMapping("/{executionId}")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public void persistResults(@NonNull @RequestBody String results, @PathVariable UUID executionId) {
+        resultService.persistResults(executionId, results);
+    }
 }

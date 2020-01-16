@@ -96,6 +96,21 @@ public class ResultServiceImpl implements ResultService {
         }
     }
 
+    public void persistResults(@NonNull UUID executionId, @NonNull String results) {
+        Path folderPath = Paths.get(storagePath + "/" + executionId).normalize();
+        try (ByteArrayInputStream resultsStream = new ByteArrayInputStream(
+                results.getBytes());
+             InputStream is = new Base64InputStream(resultsStream)) {
+
+            cleanupOldFiles(executionId, folderPath);
+            File file = saveTar(executionId, is, folderPath);
+            extractResults(executionId, file, folderPath);
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not read archive with results for execution " + executionId, e);
+        }
+    }
+
     /**
      * Retrieves the results from the execution in the ClusterService and removes old files stored for the given execution.
      *

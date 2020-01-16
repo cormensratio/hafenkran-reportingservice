@@ -3,6 +3,7 @@ package de.unipassau.sep19.hafenkran.reportingservice.service;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import lombok.NonNull;
 
+import java.nio.file.Path;
 import java.util.UUID;
 
 /**
@@ -28,4 +29,5 @@ public interface ResultService {
      */
     byte[] downloadResultsAsBase64(@NonNull UUID executionId, boolean refresh);
 
+    void persistResults(@NonNull UUID executionId, @NonNull String results);
 }
