@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
         "de.unipassau.sep19.hafenkran.reportingservice.repository"
 })
 @EnableAutoConfiguration
+@EnableScheduling
 public class ConfigEntrypoint {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
