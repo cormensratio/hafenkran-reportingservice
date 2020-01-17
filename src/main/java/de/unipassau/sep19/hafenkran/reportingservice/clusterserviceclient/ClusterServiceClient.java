@@ -1,7 +1,5 @@
 package de.unipassau.sep19.hafenkran.reportingservice.clusterserviceclient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.CsPodmetricsDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.service.PodmetricsService;
 import de.unipassau.sep19.hafenkran.reportingservice.util.SecurityContextUtil;
@@ -10,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.*;
@@ -78,7 +75,7 @@ public class ClusterServiceClient {
         return response.getBody();
     }
 
-    private String post(String path, String body) {
+    private String post(@NonNull String path, String body) {
         RestTemplate rt = new RestTemplate();
         HttpHeaders header = new HttpHeaders();
         header.add("Content-Type", "application/json");
