@@ -1,5 +1,6 @@
 package de.unipassau.sep19.hafenkran.reportingservice.service.impl;
 
+import de.unipassau.sep19.hafenkran.reportingservice.dto.CsPodmetricsDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.MetricsDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.MetricsDTOList;
 import de.unipassau.sep19.hafenkran.reportingservice.model.Podmetrics;
@@ -40,7 +41,8 @@ public class PodmetricsServiceImpl implements PodmetricsService {
     }
 
     @Override
-    public void savePodmetrics(@NonNull Podmetrics podmetrics) {
+    public void savePodmetrics(@NonNull CsPodmetricsDTO csPodmetricsDTO) {
+        Podmetrics podmetrics = new Podmetrics(csPodmetricsDTO);
         podmetricsRepository.save(podmetrics);
     }
 
