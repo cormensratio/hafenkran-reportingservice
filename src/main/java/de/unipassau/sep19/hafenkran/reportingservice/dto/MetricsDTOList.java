@@ -31,7 +31,7 @@ public class MetricsDTOList {
     private final List<MetricsDTO> metrics;
 
     @JsonCreator
-    public MetricsDTOList(List<MetricsDTO> metricsDTOList, @NonNull UUID executionId) {
+    public MetricsDTOList(@NonNull List<MetricsDTO> metricsDTOList, @NonNull UUID executionId) {
         this.ramUnit = "Kibibyte";
         this.cpuUnit = "milliCore";
         this.executionId = executionId;
