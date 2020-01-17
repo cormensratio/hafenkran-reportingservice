@@ -22,5 +22,10 @@ public interface PodmetricsService {
      */
     MetricsDTOList retrieveMetricsDTOListByExecutionId(@NonNull UUID executionId);
 
+    /**
+     * Saves the {@link CsPodmetricsDTO} Array as {@link Podmetrics} in the database.
+     *
+     * @param csPodmetricsDTOs The Array of metrics which should be persisted in the Database.
+     */
     void savePodmetrics(@NonNull CsPodmetricsDTO[] csPodmetricsDTOs);
 }
