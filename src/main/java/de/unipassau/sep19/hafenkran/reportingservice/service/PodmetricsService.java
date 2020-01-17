@@ -1,5 +1,6 @@
 package de.unipassau.sep19.hafenkran.reportingservice.service;
 
+import de.unipassau.sep19.hafenkran.reportingservice.dto.CsPodmetricsDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.MetricsDTOList;
 import de.unipassau.sep19.hafenkran.reportingservice.model.Podmetrics;
 import lombok.NonNull;
@@ -21,5 +22,5 @@ public interface PodmetricsService {
      */
     MetricsDTOList retrieveMetricsDTOListByExecutionId(@NonNull UUID executionId);
 
-    void savePodmetrics(Podmetrics podmetrics);
+    void savePodmetrics(@NonNull CsPodmetricsDTO csPodmetricsDTO);
 }
