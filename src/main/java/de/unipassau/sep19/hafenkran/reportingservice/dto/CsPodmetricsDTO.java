@@ -15,12 +15,12 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CsPodmetricsDTO {
 
+    @JsonProperty("executionId")
     UUID executionId;
 
     UUID ownerId;
 
     MetadataDTO metadata;
-
     List<ContainerDTO> containers;
 
     Timestamp timestamp;
