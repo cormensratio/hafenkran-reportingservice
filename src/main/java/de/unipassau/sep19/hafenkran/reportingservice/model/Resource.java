@@ -5,7 +5,6 @@ import de.unipassau.sep19.hafenkran.reportingservice.exception.ResourceNotFoundE
 import de.unipassau.sep19.hafenkran.reportingservice.util.SecurityContextUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContext;
@@ -40,11 +39,7 @@ public class Resource {
     @Column(nullable = false)
     private UUID ownerId;
 
-    Resource() {
-        this(SecurityContextUtil.getCurrentUserDTO().getId());
-    }
-
-    private Resource(@NonNull UUID ownerId) {
+    Resource(UUID ownerId) {
         this.id = UUID.randomUUID();
         this.createdAt = LocalDateTime.now();
         this.ownerId = ownerId;

@@ -16,7 +16,6 @@ import java.util.UUID;
 @Data
 @Table(name = "results")
 @Entity
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Results extends Resource {
 
@@ -34,8 +33,8 @@ public class Results extends Resource {
     @NotBlank
     private String path;
 
-    public Results(@NonNull UUID executionId, @NonNull ResultType type, @NonNull @NotBlank String name, @NonNull @NotBlank String path) {
-        super();
+    public Results(@NonNull UUID executionId, @NonNull ResultType type, @NonNull @NotBlank String name, @NonNull @NotBlank String path, @NonNull UUID ownerId) {
+        super(ownerId);
         this.executionId = executionId;
         this.type = type;
         this.name = name;

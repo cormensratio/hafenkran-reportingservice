@@ -1,5 +1,6 @@
 package de.unipassau.sep19.hafenkran.reportingservice.controller;
 
+import de.unipassau.sep19.hafenkran.reportingservice.dto.CSResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
 import lombok.NonNull;
@@ -51,10 +52,10 @@ public class ResultController {
     }
 
 
-    @PostMapping("/{executionId}")
+    @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public void persistResults(@NonNull @RequestBody String results, @PathVariable UUID executionId) {
-        resultService.persistResults(executionId, results);
+    public void persistResults(@NonNull @RequestBody CSResultDTO resultDTO) {
+        resultService.persistResults(resultDTO);
     }
 }

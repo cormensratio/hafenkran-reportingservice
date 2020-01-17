@@ -1,5 +1,6 @@
 package de.unipassau.sep19.hafenkran.reportingservice.service;
 
+import de.unipassau.sep19.hafenkran.reportingservice.dto.CSResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import lombok.NonNull;
 
@@ -29,5 +30,6 @@ public interface ResultService {
      */
     byte[] downloadResultsAsBase64(@NonNull UUID executionId, boolean refresh);
 
-    void persistResults(@NonNull UUID executionId, @NonNull String results);
+    void persistResults(@NonNull CSResultDTO resultDTO);
+
 }
