@@ -1,5 +1,6 @@
 package de.unipassau.sep19.hafenkran.reportingservice.model;
 
+import de.unipassau.sep19.hafenkran.reportingservice.dto.CsPodmetricsDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -26,20 +27,20 @@ public class Podmetrics extends Resource {
     private UUID experimentId;
 
     @NonNull
+    private Timestamp timestamp;
+
+    @NonNull
     private String cpu;
 
     @NonNull
     private String memory;
 
-    @NonNull
-    private Timestamp timestamp;
-
-    public Podmetrics(@NonNull UUID executionId, @NonNull UUID experimentId, @NonNull String cpu, @NonNull String memory, @NonNull Timestamp timestamp) {
-        super();
-        this.executionId = executionId;
-        this.experimentId = experimentId;
-        this.cpu = cpu;
-        this.memory = memory;
-        this.timestamp = timestamp;
+    public Podmetrics (@NonNull CsPodmetricsDTO csPodmetricsDTO) {
+        super(csPodmetricsDTO.getOwnerId());
+        this.executionId = csPodmetricsDTO.getExecutionId();
+        this.experimentId = UUID.fromString(csPodmetricsDTO.getMetadata().getNamespace());
+        this.cpu = csPodmetricsDTO.getContainers().get(0).getUsage().getCpu();
+        this.memory = csPodmetricsDTO.getContainers().get(0).getUsage().getMemory();
+        this.timestamp = csPodmetricsDTO.getTimestamp();
     }
 }
