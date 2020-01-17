@@ -41,7 +41,10 @@ public class Resource {
     @Column(nullable = false)
     private UUID ownerId;
 
-    Resource(@NonNull UUID ownerId) {
+    Resource(UUID ownerId) {
+        if(ownerId == null){
+            ownerId = SecurityContextUtil.getCurrentUserDTO().getId();
+        }
         this.id = UUID.randomUUID();
         this.createdAt = LocalDateTime.now();
         this.ownerId = ownerId;
