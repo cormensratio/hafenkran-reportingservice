@@ -32,7 +32,8 @@ public class Podmetrics extends Resource {
     @NonNull
     private String memory;
 
-    public Podmetrics(UUID ownerId, UUID executionId, UUID experimentId, Timestamp timestamp, String cpu, String memory){
+    public Podmetrics(@NonNull UUID ownerId, @NonNull UUID executionId, @NonNull UUID experimentId,
+                      @NonNull Timestamp timestamp, @NonNull String cpu, @NonNull String memory){
         super(ownerId);
         this.experimentId = experimentId;
         this.executionId = executionId;
