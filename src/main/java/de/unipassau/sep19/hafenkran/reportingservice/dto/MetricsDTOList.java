@@ -18,16 +18,22 @@ import java.util.UUID;
 @AllArgsConstructor(onConstructor = @__(@JsonCreator))
 public class MetricsDTOList {
 
+    private final String ramUnit;
+
+    private final String cpuUnit;
+
     @NonNull
     @JsonProperty("executionId")
     private final UUID executionId;
 
     @NonNull
-    @JsonProperty("metricsList")
+    @JsonProperty("metricList")
     private final List<MetricsDTO> metrics;
 
     @JsonCreator
     public MetricsDTOList(List<MetricsDTO> metricsDTOList, @NonNull UUID executionId) {
+        this.ramUnit = "Kibibyte";
+        this.cpuUnit = "milliCore";
         this.executionId = executionId;
 
         if (metricsDTOList.isEmpty()) {
