@@ -1,10 +1,7 @@
 package de.unipassau.sep19.hafenkran.reportingservice.model;
 
 import de.unipassau.sep19.hafenkran.reportingservice.dto.CsPodmetricsDTO;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,12 +32,19 @@ public class Podmetrics extends Resource {
     @NonNull
     private String memory;
 
-    public Podmetrics (@NonNull CsPodmetricsDTO csPodmetricsDTO) {
-        super(csPodmetricsDTO.getOwnerId());
-        this.executionId = csPodmetricsDTO.getExecutionId();
-        this.experimentId = UUID.fromString(csPodmetricsDTO.getMetadata().getNamespace());
-        this.cpu = csPodmetricsDTO.getContainers().get(0).getUsage().getCpu();
-        this.memory = csPodmetricsDTO.getContainers().get(0).getUsage().getMemory();
-        this.timestamp = csPodmetricsDTO.getTimestamp();
+    public Podmetrics(UUID ownerId, UUID executionId, UUID experimentId, Timestamp timestamp, String cpu, String memory){
+        super(ownerId);
+        this.experimentId = experimentId;
+        this.executionId = executionId;
+        this.timestamp = timestamp;
+        this.cpu = cpu;
+        this.memory = memory;
+    }
+
+    public static Podmetrics fromPodmetricsDTO(@NonNull CsPodmetricsDTO csPodmetricsDTO) {
+        return new Podmetrics(csPodmetricsDTO.getOwnerId(), csPodmetricsDTO.getExecutionId(),
+                UUID.fromString(csPodmetricsDTO.getMetadata().getNamespace()),
+                csPodmetricsDTO.getTimestamp(), csPodmetricsDTO.getContainers().get(0).getUsage().getCpu(),
+                csPodmetricsDTO.getContainers().get(0).getUsage().getMemory());
     }
 }
