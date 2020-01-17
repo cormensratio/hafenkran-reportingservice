@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,9 +42,13 @@ public class PodmetricsServiceImpl implements PodmetricsService {
     }
 
     @Override
-    public void savePodmetrics(@NonNull CsPodmetricsDTO csPodmetricsDTO) {
-        Podmetrics podmetrics = new Podmetrics(csPodmetricsDTO);
-        podmetricsRepository.save(podmetrics);
+    public void savePodmetrics(@NonNull CsPodmetricsDTO[] csPodmetricsDTOs) {
+        Arrays.stream(csPodmetricsDTOs).forEach(
+                m -> {
+                    Podmetrics podmetrics = Podmetrics.fromPodmetricsDTO(m);
+                    podmetricsRepository.save(podmetrics);
+                }
+        );
     }
 
     private List<Podmetrics> retrievePodmetricsListByExecutionId(@NonNull UUID executionId) {
