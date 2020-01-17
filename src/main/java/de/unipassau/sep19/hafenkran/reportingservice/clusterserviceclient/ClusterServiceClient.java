@@ -2,7 +2,7 @@ package de.unipassau.sep19.hafenkran.reportingservice.clusterserviceclient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.unipassau.sep19.hafenkran.reportingservice.model.Podmetrics;
+import de.unipassau.sep19.hafenkran.reportingservice.dto.CsPodmetricsDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.service.PodmetricsService;
 import de.unipassau.sep19.hafenkran.reportingservice.util.SecurityContextUtil;
 import lombok.NonNull;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class ClusterServiceClient {
     @Value("${clusterservice.path}")
     private String basePath;
 
-    private PodmetricsService podmetricsService;
+    private final PodmetricsService podmetricsService;
 
     private <T> T get(String path, Class<T> responseType) {
         RestTemplate rt = new RestTemplate();
@@ -60,10 +61,13 @@ public class ClusterServiceClient {
         convertJsonToPodMetricsAndSave(jsonGetMetricsResponse);
     }
 
-    private <T> T getMetrics(String path, Class<T> responseType) {
+    private <T> T getMetrics(@NonNull String path, Class<T> responseType) {
         RestTemplate rt = new RestTemplate();
         String targetPath = basePath + path;
-        ResponseEntity<T> response = rt.exchange(basePath + path, HttpMethod.GET, authTestHeaders(), responseType);
+        HttpHeaders token = authHeadersMicroserviceCommunication();
+        token.add("Content-Type", "application/json");
+        HttpEntity httpEntity = new HttpEntity<>("", token);
+        ResponseEntity<T> response = rt.exchange(basePath + path, HttpMethod.GET, httpEntity, responseType);
 
         if (!HttpStatus.Series.valueOf(response.getStatusCode()).equals(HttpStatus.Series.SUCCESSFUL)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -74,14 +78,7 @@ public class ClusterServiceClient {
         return response.getBody();
     }
 
-    private HttpEntity authTestHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDEiLCJleHAiOjE1NzkyNzAxOTQsInVzZXIiOnsiaWQiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDEiLCJuYW1lIjoiTW9ydGltZXIiLCJlbWFpbCI6IiIsImlzQWRtaW4iOnRydWV9LCJpYXQiOjE1NzkwOTczOTR9.IxpYyTDQiL65Mu2bvtH0WrE5wb62TtjGKZSltp7_PxRURPlAWK8qyYFFJas-g7DdiC9Oz8oJsebIbN6xr79Fnw";
-        headers.set("Authorization", "Bearer " + token);
-        return new HttpEntity<>("body", headers);
-    }
-
-    private void convertJsonToPodMetricsAndSave(String jsonGetMetricsResponse) {
+    private void convertJsonToPodMetricsAndSave(@NonNull String jsonGetMetricsResponse) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JSONArray jsonResponseArray = new JSONArray(jsonGetMetricsResponse);
@@ -89,8 +86,8 @@ public class ClusterServiceClient {
                 for (int i = 0; i < jsonResponseArray.length(); i++) {
                     String jsonMetricsItem = jsonResponseArray.getJSONObject(i).toString();
                     System.out.println(jsonMetricsItem);
-                    Podmetrics podMetrics = objectMapper.readValue(jsonMetricsItem, Podmetrics.class);
-                    podmetricsService.savePodmetrics(podMetrics);
+                    CsPodmetricsDTO csPodMetricsDTO = objectMapper.readValue(jsonMetricsItem, CsPodmetricsDTO.class);
+                    podmetricsService.savePodmetrics(csPodMetricsDTO);
                 }
             }
         } catch (JsonProcessingException e) {
@@ -98,5 +95,39 @@ public class ClusterServiceClient {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private String post(String path, String body) {
+        RestTemplate rt = new RestTemplate();
+        HttpHeaders header = new HttpHeaders();
+        header.add("Content-Type", "application/json");
+        ResponseEntity<String> response = rt.exchange(path, HttpMethod.POST,
+                new HttpEntity<>(body, header), String.class);
+
+        if (!HttpStatus.Series.valueOf(response.getStatusCode()).equals(HttpStatus.Series.SUCCESSFUL)) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    String.format("Could not retrieve data from %s. Reason: %s %s", path,
+                            response.getStatusCodeValue(), response.getBody()));
+        }
+
+        return response.getBody();
+    }
+
+    private String getAuthToken() {
+        String loginResponse = post("http://localhost:8081/authenticate",
+                String.format("{\"name\":\"%s\", \"password\":\"%s\"}", "service", "test"));
+        final String jwtToken;
+        try {
+            jwtToken = (String) new JSONObject(loginResponse).get("jwtToken");
+            return jwtToken;
+        } catch (JSONException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not retrieve JWT from login.");
+        }
+    }
+
+    private HttpHeaders authHeadersMicroserviceCommunication() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + getAuthToken());
+        return headers;
     }
 }
