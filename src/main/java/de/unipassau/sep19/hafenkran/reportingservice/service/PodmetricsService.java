@@ -22,5 +22,5 @@ public interface PodmetricsService {
      */
     MetricsDTOList retrieveMetricsDTOListByExecutionId(@NonNull UUID executionId);
 
-    void savePodmetrics(@NonNull CsPodmetricsDTO csPodmetricsDTO);
+    void savePodmetrics(@NonNull CsPodmetricsDTO[] csPodmetricsDTOs);
 }
