@@ -51,14 +51,14 @@ public class ClusterServiceClient {
         return new HttpEntity<>("body", headers);
     }
 
-    public String retrieveResultsForExecutionId(@NonNull UUID executionId){
+    public String retrieveResultsForExecutionId(@NonNull UUID executionId) {
         return get(String.format("/executions/%s/results", executionId), String.class);
     }
 
-    @Scheduled(fixedRate=60000)
-    public void retrieveAllPodMetrics(){
-        String jsonGetMetricsResponse = getMetrics("/metrics/all", String.class);
-        convertJsonToPodMetricsAndSave(jsonGetMetricsResponse);
+    @Scheduled(fixedRate = 60000)
+    public void retrieveAllPodMetrics() {
+        CsPodmetricsDTO[] podmetricsDTOs = getMetrics("/metrics/all", CsPodmetricsDTO[].class);
+        podmetricsService.savePodmetrics(podmetricsDTOs);
     }
 
     private <T> T getMetrics(@NonNull String path, Class<T> responseType) {
@@ -76,25 +76,6 @@ public class ClusterServiceClient {
         }
 
         return response.getBody();
-    }
-
-    private void convertJsonToPodMetricsAndSave(@NonNull String jsonGetMetricsResponse) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            JSONArray jsonResponseArray = new JSONArray(jsonGetMetricsResponse);
-            if (jsonResponseArray.length() >= 1) {
-                for (int i = 0; i < jsonResponseArray.length(); i++) {
-                    String jsonMetricsItem = jsonResponseArray.getJSONObject(i).toString();
-                    System.out.println(jsonMetricsItem);
-                    CsPodmetricsDTO csPodMetricsDTO = objectMapper.readValue(jsonMetricsItem, CsPodmetricsDTO.class);
-                    podmetricsService.savePodmetrics(csPodMetricsDTO);
-                }
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private String post(String path, String body) {
