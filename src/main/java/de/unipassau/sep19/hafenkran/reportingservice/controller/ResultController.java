@@ -52,6 +52,11 @@ public class ResultController {
     }
 
 
+    /**
+     * POST-Endpoint for storing the given results.
+     *
+     * @param resultDTO the {@link CSResultDTO} containing the result information.
+     */
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)

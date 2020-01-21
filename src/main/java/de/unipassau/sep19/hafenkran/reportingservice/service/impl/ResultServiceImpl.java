@@ -1,12 +1,12 @@
 package de.unipassau.sep19.hafenkran.reportingservice.service.impl;
 
-import de.unipassau.sep19.hafenkran.reportingservice.clusterserviceclient.ClusterServiceClient;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.CSResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import de.unipassau.sep19.hafenkran.reportingservice.model.Results;
 import de.unipassau.sep19.hafenkran.reportingservice.repository.ResultRepository;
 import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
+import de.unipassau.sep19.hafenkran.reportingservice.serviceclient.ClusterServiceClient;
 import de.unipassau.sep19.hafenkran.reportingservice.util.SecurityContextUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,6 @@ import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -48,7 +47,7 @@ public class ResultServiceImpl implements ResultService {
     @NonNull
     private ClusterServiceClient csClient;
 
-    @Value("${results.storage-path}")
+    @Value("${results-storage-path}")
     private String storagePath;
 
     /**

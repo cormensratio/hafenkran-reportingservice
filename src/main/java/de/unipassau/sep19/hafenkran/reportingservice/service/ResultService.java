@@ -4,7 +4,6 @@ import de.unipassau.sep19.hafenkran.reportingservice.dto.CSResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import lombok.NonNull;
 
-import java.nio.file.Path;
 import java.util.UUID;
 
 /**
@@ -30,6 +29,11 @@ public interface ResultService {
      */
     byte[] downloadResultsAsBase64(@NonNull UUID executionId, boolean refresh);
 
+    /**
+     * Persist the results from the {@link CSResultDTO} for the given owner and execution id.
+     *
+     * @param resultDTO the {@link CSResultDTO} containing the relevant information for storing the results.
+     */
     void persistResults(@NonNull CSResultDTO resultDTO);
 
 }

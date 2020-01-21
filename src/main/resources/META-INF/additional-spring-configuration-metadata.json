@@ -16,12 +16,12 @@
       "description": "The secret used for signing JWTs."
     },
     {
-      "name": "clusterservice.path",
+      "name": "cluster-service-uri",
       "type": "java.lang.String",
       "description": "The URI for the ClusterService."
     },
     {
-      "name": "results.storage-path",
+      "name": "results-storage-path",
       "type": "java.lang.String",
       "description": "The path to the local storage location of the results."
     }

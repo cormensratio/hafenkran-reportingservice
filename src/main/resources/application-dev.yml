@@ -9,14 +9,14 @@ spring:
     initialization-mode: always
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
 
 jwt:
-  validity: 18000
+  validity: {5 * 60 * 60}
   secret: MCgCIQCAS7IFlSvaBOPXwSBHo+7+6C4RbkvYj3fgI5+Abe4pRwIDAQAB
 
 mockdata: true
 
-clusterservice.path: http://localhost:8082
-results.storage-path: /tmp/hafenkran/results
+cluster-service-uri: http://localhost:8082
+results-storage-path: /tmp/hafenkran/results
