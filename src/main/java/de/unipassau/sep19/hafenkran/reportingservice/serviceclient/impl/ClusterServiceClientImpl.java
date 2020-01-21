@@ -17,7 +17,7 @@ public class ClusterServiceClientImpl implements ClusterServiceClient {
     private final ServiceClient serviceClient;
 
     @Value("${service-user.secret}")
-    private final String serviceSecret;
+    private String serviceSecret;
 
     /**
      * {@inheritDoc}
