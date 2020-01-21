@@ -7,9 +7,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -23,6 +25,9 @@ import java.util.UUID;
 public class ResultController {
 
     private final ResultService resultService;
+
+    @Value("${service-user.secret}")
+    private final String serviceSecret;
 
     /**
      * GET-Endpoint for receiving the csv- and log-results of an execution with the {@code executionId}.
@@ -40,7 +45,7 @@ public class ResultController {
     /**
      * GET-Endpoint for receiving all results of the execution with the {@code executionId} as a String.
      *
-     * @param executionId The id from the execution to get the results from.
+     * @param executionId   The id from the execution to get the results from.
      * @param refreshString A boolean represented as string, which toggles the refresh of the resources.
      * @return A Base64-String from the results for making a download available.
      */
@@ -60,7 +65,11 @@ public class ResultController {
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public void persistResults(@NonNull @RequestBody CSResultDTO resultDTO) {
+    public void persistResults(@NonNull @RequestBody CSResultDTO resultDTO, @RequestParam("secret") String secret) {
+        if (!secret.equals(serviceSecret)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "You are not authorized to call an internal service endpoint");
+        }
         resultService.persistResults(resultDTO);
     }
 }

@@ -25,3 +25,4 @@ results-storage-path: /tmp/hafenkran/results
 service-user:
   name: service
   password: test
+  secret: secretToken
