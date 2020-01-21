@@ -27,7 +27,7 @@ public class ResultController {
     private final ResultService resultService;
 
     @Value("${service-user.secret}")
-    private final String serviceSecret;
+    private String serviceSecret;
 
     /**
      * GET-Endpoint for receiving the csv- and log-results of an execution with the {@code executionId}.
