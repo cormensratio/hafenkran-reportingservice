@@ -24,6 +24,21 @@
       "name": "results-storage-path",
       "type": "java.lang.String",
       "description": "The path to the local storage location of the results."
+    },
+    {
+      "name": "service-user.name",
+      "type": "java.lang.String",
+      "description": "Name of the user used for internal communication between services."
+    },
+    {
+      "name": "service-user.password",
+      "type": "java.lang.String",
+      "description": "Password of the user used for internal communication between services."
+    },
+    {
+      "name": "user-service-uri",
+      "type": "java.lang.String",
+      "description": "URI for the UserService."
     }
   ]
 }

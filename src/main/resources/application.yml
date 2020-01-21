@@ -22,5 +22,10 @@ jwt:
 
 mockdata: false
 
+user-service-uri:
 cluster-service-uri:
 results-storage-path: /tmp/hafenkran/results
+
+service-user:
+  name:
+  password:
