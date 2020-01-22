@@ -1,11 +1,13 @@
 package de.unipassau.sep19.hafenkran.reportingservice.service.impl;
 
-import de.unipassau.sep19.hafenkran.reportingservice.clusterserviceclient.ClusterServiceClient;
+import de.unipassau.sep19.hafenkran.reportingservice.dto.CSResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import de.unipassau.sep19.hafenkran.reportingservice.model.Results;
 import de.unipassau.sep19.hafenkran.reportingservice.repository.ResultRepository;
 import de.unipassau.sep19.hafenkran.reportingservice.service.ResultService;
+import de.unipassau.sep19.hafenkran.reportingservice.serviceclient.ClusterServiceClient;
+import de.unipassau.sep19.hafenkran.reportingservice.util.SecurityContextUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +47,7 @@ public class ResultServiceImpl implements ResultService {
     @NonNull
     private ClusterServiceClient csClient;
 
-    @Value("${results.storage-path}")
+    @Value("${results-storage-path}")
     private String storagePath;
 
     /**
@@ -96,6 +98,22 @@ public class ResultServiceImpl implements ResultService {
         }
     }
 
+    public void persistResults(@NonNull CSResultDTO resultDTO) {
+        UUID executionId = resultDTO.getExecutionId();
+        Path folderPath = Paths.get(storagePath + "/" + executionId).normalize();
+        try (ByteArrayInputStream resultsStream = new ByteArrayInputStream(
+                resultDTO.getResults().getBytes());
+             InputStream is = new Base64InputStream(resultsStream)) {
+
+            cleanupOldFiles(executionId, folderPath);
+            File file = saveTar(executionId, is, folderPath);
+            extractResults(executionId, file, folderPath, resultDTO.getOwnerId());
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not read archive with results for execution " + executionId, e);
+        }
+    }
+
     /**
      * Retrieves the results from the execution in the ClusterService and removes old files stored for the given execution.
      *
@@ -108,14 +126,14 @@ public class ResultServiceImpl implements ResultService {
 
             cleanupOldFiles(executionId, folderPath);
             File file = saveTar(executionId, is, folderPath);
-            extractResults(executionId, file, folderPath);
+            extractResults(executionId, file, folderPath, SecurityContextUtil.getCurrentUserDTO().getId());
 
         } catch (IOException e) {
             throw new IllegalStateException("Could not read archive with results for execution " + executionId, e);
         }
     }
 
-    private void extractResults(@NonNull UUID executionId, @NonNull File targetFile, @NonNull Path folderPath) throws IOException {
+    private void extractResults(@NonNull UUID executionId, @NonNull File targetFile, @NonNull Path folderPath, @NonNull UUID ownerId) throws IOException {
         // Extract important files and save them to the database
         ArchiveInputStream is = new TarArchiveInputStream(new FileInputStream(targetFile));
         TarArchiveEntry entry;
@@ -153,7 +171,7 @@ public class ResultServiceImpl implements ResultService {
                 outputFileStream.close();
             }
 
-            resultRepository.save(new Results(executionId, type, fileName, outputFile.getPath()));
+            resultRepository.save(new Results(executionId, type, fileName, outputFile.getPath(), ownerId));
         }
     }
 

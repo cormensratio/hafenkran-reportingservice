@@ -1,5 +1,6 @@
 package de.unipassau.sep19.hafenkran.reportingservice.service;
 
+import de.unipassau.sep19.hafenkran.reportingservice.dto.CSResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import lombok.NonNull;
 
@@ -27,5 +28,12 @@ public interface ResultService {
      * @return the base64 encoded tar file.
      */
     byte[] downloadResultsAsBase64(@NonNull UUID executionId, boolean refresh);
+
+    /**
+     * Persist the results from the {@link CSResultDTO} for the given owner and execution id.
+     *
+     * @param resultDTO the {@link CSResultDTO} containing the relevant information for storing the results.
+     */
+    void persistResults(@NonNull CSResultDTO resultDTO);
 
 }

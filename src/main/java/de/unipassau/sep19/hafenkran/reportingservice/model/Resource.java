@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContext;
 
 import javax.persistence.Basic;
@@ -23,6 +24,7 @@ import java.util.UUID;
 @Slf4j
 @MappedSuperclass
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode
 public class Resource {
 
@@ -40,11 +42,10 @@ public class Resource {
     @Column(nullable = false)
     private UUID ownerId;
 
-    Resource() {
-        this(SecurityContextUtil.getCurrentUserDTO().getId());
-    }
-
-    private Resource(@NonNull UUID ownerId) {
+    Resource(@Nullable UUID ownerId) {
+        if (ownerId == null) {
+            ownerId = SecurityContextUtil.getCurrentUserDTO().getId();
+        }
         this.id = UUID.randomUUID();
         this.createdAt = LocalDateTime.now();
         this.ownerId = ownerId;
