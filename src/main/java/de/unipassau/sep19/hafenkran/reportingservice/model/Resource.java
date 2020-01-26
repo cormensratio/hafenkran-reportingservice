@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContext;
 
 import javax.persistence.Basic;
@@ -41,8 +42,8 @@ public class Resource {
     @Column(nullable = false)
     private UUID ownerId;
 
-    Resource(UUID ownerId) {
-        if(ownerId == null){
+    Resource(@Nullable UUID ownerId) {
+        if (ownerId == null) {
             ownerId = SecurityContextUtil.getCurrentUserDTO().getId();
         }
         this.id = UUID.randomUUID();

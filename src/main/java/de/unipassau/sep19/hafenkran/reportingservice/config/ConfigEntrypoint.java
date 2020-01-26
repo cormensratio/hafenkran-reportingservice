@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
         "de.unipassau.sep19.hafenkran.reportingservice.controller",
         "de.unipassau.sep19.hafenkran.reportingservice.util",
         "de.unipassau.sep19.hafenkran.reportingservice.service.impl",
-        "de.unipassau.sep19.hafenkran.reportingservice.clusterserviceclient"
+        "de.unipassau.sep19.hafenkran.reportingservice.serviceclient.impl"
 })
 @EntityScan(basePackages = {
         "de.unipassau.sep19.hafenkran.reportingservice.model"
