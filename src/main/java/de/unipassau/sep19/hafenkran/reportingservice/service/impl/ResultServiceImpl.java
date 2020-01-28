@@ -98,6 +98,9 @@ public class ResultServiceImpl implements ResultService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void persistResults(@NonNull CSResultDTO resultDTO) {
         UUID executionId = resultDTO.getExecutionId();
         Path folderPath = Paths.get(storagePath + "/" + executionId).normalize();

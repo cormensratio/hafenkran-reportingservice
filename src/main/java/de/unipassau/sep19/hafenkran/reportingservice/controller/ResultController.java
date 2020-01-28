@@ -75,14 +75,15 @@ public class ResultController {
     }
 
     /**
-     * DELETE-Endpoint for deleting the persistent results of an execution.
+     * DELETE-Endpoint for deleting the persistent results of executions.
      *
-     * @param executionId The id of the execution which results should be deleted.
+     * @param executionIdList The ids of the executions which results should be deleted.
+     * @param secret The secret for internal calls.
      */
-    @PostMapping("/deletedExecution")
+    @PostMapping("/delete")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public void deleteResults(@RequestParam List<UUID> executionIdList, @RequestParam("secret") String secret) {
+    public void deleteResults(@RequestParam("executionIds") List<UUID> executionIdList, @RequestParam("secret") String secret) {
         if (!secret.equals(serviceSecret)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                     "You are not authorized to call an internal service endpoint");
