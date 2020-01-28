@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -72,4 +73,21 @@ public class ResultController {
         }
         resultService.persistResults(resultDTO);
     }
+
+    /**
+     * DELETE-Endpoint for deleting the persistent results of an execution.
+     *
+     * @param executionId The id of the execution which results should be deleted.
+     */
+    @PostMapping("/deletedExecution")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteResults(@RequestParam List<UUID> executionIdList, @RequestParam("secret") String secret) {
+        if (!secret.equals(serviceSecret)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "You are not authorized to call an internal service endpoint");
+        }
+        resultService.deleteResults(executionIdList);
+    }
+
 }

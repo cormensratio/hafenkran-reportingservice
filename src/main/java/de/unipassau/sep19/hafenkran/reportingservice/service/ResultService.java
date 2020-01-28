@@ -4,6 +4,7 @@ import de.unipassau.sep19.hafenkran.reportingservice.dto.CSResultDTO;
 import de.unipassau.sep19.hafenkran.reportingservice.dto.ResultDTOList;
 import lombok.NonNull;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -35,5 +36,12 @@ public interface ResultService {
      * @param resultDTO the {@link CSResultDTO} containing the relevant information for storing the results.
      */
     void persistResults(@NonNull CSResultDTO resultDTO);
+
+    /**
+     * Deletes the results of an execution.
+     *
+     * @param executionIdList A list of ids of the executions which results should be deleted.
+     */
+    void deleteResults(@NonNull List<UUID> executionIdList);
 
 }

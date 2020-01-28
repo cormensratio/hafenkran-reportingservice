@@ -115,6 +115,16 @@ public class ResultServiceImpl implements ResultService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteResults(@NonNull List<UUID> executionIdList) {
+        for (UUID executionId : executionIdList) {
+            resultRepository.deleteByExecutionId(executionId);
+        }
+    }
+
+    /**
      * Retrieves the results from the execution in the ClusterService and removes old files stored for the given execution.
      *
      * @param executionId the id of the execution
