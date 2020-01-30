@@ -31,9 +31,8 @@ public class ClusterServiceClientImpl implements ClusterServiceClient {
      * {@inheritDoc}
      **/
     public String retrieveResultsForExecutionId(@NonNull UUID executionId) {
-        return serviceClient.get(String.format("/executions/%s/results?secret" +
-                        "=%s", executionId, serviceSecret),
-                String.class, null);
+        return serviceClient.get(String.format("%s/executions/%s/results" +
+                "?secret=%s", clusterServiceURI, executionId, serviceSecret), String.class, null);
     }
 
     @Scheduled(fixedRateString = "#{${metrics.frequency} * 1000}",
