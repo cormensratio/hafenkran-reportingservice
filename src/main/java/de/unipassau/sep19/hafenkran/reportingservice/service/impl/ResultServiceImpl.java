@@ -98,6 +98,9 @@ public class ResultServiceImpl implements ResultService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void persistResults(@NonNull CSResultDTO resultDTO) {
         UUID executionId = resultDTO.getExecutionId();
         Path folderPath = Paths.get(storagePath + "/" + executionId).normalize();
@@ -111,6 +114,16 @@ public class ResultServiceImpl implements ResultService {
 
         } catch (IOException e) {
             throw new IllegalStateException("Could not read archive with results for execution " + executionId, e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteResults(@NonNull List<UUID> executionIdList) {
+        for (UUID executionId : executionIdList) {
+            resultRepository.deleteByExecutionId(executionId);
         }
     }
 
