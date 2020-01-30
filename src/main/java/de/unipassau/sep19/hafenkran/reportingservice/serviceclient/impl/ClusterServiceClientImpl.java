@@ -38,7 +38,7 @@ public class ClusterServiceClientImpl implements ClusterServiceClient {
     @Scheduled(fixedRateString = "#{${metrics.frequency} * 1000}",
             initialDelayString = "#{${metrics.initial-delay} * 1000}")
     public void retrieveAllPodmetrics() {
-        CsPodmetricsDTO[] podmetricsDTOs = serviceClient.get(clusterServiceURI + "/metrics/all",
+        CsPodmetricsDTO[] podmetricsDTOs = serviceClient.get(clusterServiceURI + "/metrics?secret=" + serviceSecret,
                 CsPodmetricsDTO[].class, null);
         podmetricsService.savePodmetrics(podmetricsDTOs);
     }
