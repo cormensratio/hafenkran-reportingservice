@@ -41,6 +41,9 @@ public class PodmetricsServiceImpl implements PodmetricsService {
         return new MetricsDTOList(metricsDTOList, executionId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void savePodmetrics(@NonNull CsPodmetricsDTO[] csPodmetricsDTOs) {
         Arrays.stream(csPodmetricsDTOs).forEach(
