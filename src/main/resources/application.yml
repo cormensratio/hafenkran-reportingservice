@@ -30,3 +30,7 @@ service-user:
   name:
   password:
   secret:
+
+metrics:
+  frequency: 60
+  initial-delay: 120

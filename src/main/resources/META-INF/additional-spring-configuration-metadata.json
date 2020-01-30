@@ -44,6 +44,16 @@
       "name": "user-service-uri",
       "type": "java.lang.String",
       "description": "URI for the UserService."
+    },
+    {
+      "name": "metrics.frequency",
+      "type": "java.lang.String",
+      "description": "Declare break between each request to the cluster service in seconds."
+    },
+    {
+      "name": "metrics.initial-delay",
+      "type": "java.lang.String",
+      "description": "Declare initial waiting time in seconds before requesting the first metrics."
     }
   ]
 }
