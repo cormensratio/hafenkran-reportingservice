@@ -18,8 +18,8 @@ jwt:
 
 mockdata: true
 
-user-service-uri: http://hafenkran-userservice:8081
-cluster-service-uri: http://hafenkran-userservice:8082
+user-service-uri: http://localhost:8081
+cluster-service-uri: http://localhost:8082
 results-storage-path: /tmp/hafenkran/results
 
 service-user:
