@@ -18,12 +18,25 @@ Make sure that the required parameters in `application.yml` are configured, when
 
 ### Config
 The following settings can be configured for a production system:
-```
-spring.datasource.url:          # the location of the database
-spring.datasource.username:     # the user for the database
-spring.datasource.password:     # the password for the database user
 
-jwt.secret:                     # the JWT secret used for signing and validation
-cluster-service-uri:            # the uri to the ClusterService
-results-storage-path:           # the storage path for the result files
+```
+spring.datasource.url:          # location of the database
+spring.datasource.username:     # user for the database
+spring.datasource.password:     # password for the database user
+
+jwt.secret:                     # JWT secret used for signing and validation
+jwt.validity:                   # time after creation until a JWT is marked invalid
+
+cluster-service-uri:            # uri to the ClusterService
+results-storage-path:           # storage path for the result files
+results-storage-path:
+
+service-user:
+  name:                         # name of the user used for microservice communication
+  password:                     # password of the user used for microservice communication
+  secret:                       # secret token used as request parameter for internal service calls
+
+metrics:
+  frequency:                    # frequency of metrics updates
+  initial-delay:                # initial delay for the first metrics retrieval
 ```
