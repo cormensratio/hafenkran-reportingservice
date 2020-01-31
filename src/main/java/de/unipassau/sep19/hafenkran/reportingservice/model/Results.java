@@ -1,8 +1,10 @@
 package de.unipassau.sep19.hafenkran.reportingservice.model;
 
-import lombok.*;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,8 +36,8 @@ public class Results extends Resource {
     @NotBlank
     private String path;
 
-    public Results(@NonNull UUID executionId, @NonNull ResultType type, @NonNull @NotBlank String name, @NonNull @NotBlank String path) {
-        super();
+    public Results(@NonNull UUID executionId, @NonNull ResultType type, @NonNull @NotBlank String name, @NonNull @NotBlank String path, @Nullable UUID ownerId) {
+        super(ownerId);
         this.executionId = executionId;
         this.type = type;
         this.name = name;

@@ -12,10 +12,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           lob:
-            # Workaround for hibernate error in Spring Boot < 2.2.0.M(1-4)
-            # Remove when updating Spring Boot to a later version
-            # https://stackoverflow.com/a/52545424
             non_contextual_creation: true
+    hibernate:
+      ddl-auto: update
 
 jwt:
   validity: {5 * 60 * 60}
@@ -23,5 +22,15 @@ jwt:
 
 mockdata: false
 
-clusterservice.path:
-results.storage-path: /tmp/hafenkran/results
+user-service-uri:
+cluster-service-uri:
+results-storage-path: /tmp/hafenkran/results
+
+service-user:
+  name:
+  password:
+  secret:
+
+metrics:
+  frequency: 60
+  initial-delay: 120
